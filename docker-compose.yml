@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: ./Front_Eval2
+    container_name: gestor-user-frontend
+    ports:
+      - "8080:5000"
+    environment:
+      BACKEND_URL: http://backend:3000
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: ./Back_Eval2
+    container_name: gestor-user-backend
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: admin123
+      DB_NAME: proyecto_db
+      DB_PORT: 3306
+    ports:
+      - "3001:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  db:
+    image: mysql:8
+    container_name: gestor-user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: proyecto_db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./Data_Eval2/01_creacion_base_datos.sql:/docker-entrypoint-initdb.d/01_creacion_base_datos.sql
+
+volumes:
+  dbdata:
