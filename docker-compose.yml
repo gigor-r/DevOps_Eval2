@@ -50,7 +50,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 60s
+      start_period: 61s
     volumes:
       - ./Data_Eval2/01_creacion_base_datos.sql:/docker-entrypoint-initdb.d/01_creacion_base_datos.sql
       - ./Data_Eval2/02_backup_y_mantenimiento.sql:/docker-entrypoint-initdb.d/02_backup_y_mantenimiento.sql
