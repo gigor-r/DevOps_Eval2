@@ -1,5 +1,6 @@
 name: CI/CD DevOps_Eval2 - Frontend
 
+# Comentario de prueba para ver si se ejecuta el workflow
 on:
   push:
     branches: [ "main" ]
@@ -13,6 +14,7 @@ jobs:
     steps:
     - name: Checkout código
       uses: actions/checkout@v3
+
 
     - name: Configurar credenciales AWS
       uses: aws-actions/configure-aws-credentials@v4
