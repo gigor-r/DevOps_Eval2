@@ -1,0 +1,48 @@
+name: CI/CD DevOps_Eval2 - Backend
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "Back_Eval2/**"
+
+jobs:
+  build-push-deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Configurar credenciales AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Login en Amazon ECR (runner)
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build imagen Backend y push a ECR
+      run: |
+        cd Back_Eval2
+        docker build -t devops_eval2-backend .
+        docker tag devops_eval2-backend:latest ${{ secrets.ECR_REPO_URL_BACKEND }}:latest
+        docker push ${{ secrets.ECR_REPO_URL_BACKEND }}:latest
+
+    - name: Desplegar Backend vía SSM
+      run: |
+        aws ssm send-command \
+          --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+          --document-name "AWS-RunShellScript" \
+          --comment "Actualizar gestor-user-backend desde ECR" \
+          --parameters '{"commands":[
+            "set -e",
+            "cd /home/ubuntu/DevOps_Eval2",
+            "aws ecr get-login-password --region '${{ secrets.AWS_REGION }}' | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}",
+            "docker compose pull backend",
+            "docker compose up -d backend"
+          ]}' \
+          --output text
