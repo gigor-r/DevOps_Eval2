@@ -34,20 +34,25 @@ services:
       start_period: 10s
 
   db:
-    image: mysql:8
+    build: ./Data_Eval2
     container_name: gestor-user-db
+    command:
+      - --innodb-buffer-pool-size=128M
+      - --performance-schema=OFF
+      - --max-connections=50
     environment:
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: proyecto_db
+    mem_limit: 450m
+    memswap_limit: 900m
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin123"]
       interval: 10s
       timeout: 5s
-      retries: 5
-      start_period: 20s
+      retries: 10
+      start_period: 60s
     volumes:
-      - dbdata:/var/lib/mysql
       - ./Data_Eval2/01_creacion_base_datos.sql:/docker-entrypoint-initdb.d/01_creacion_base_datos.sql
-
+      - ./Data_Eval2/02_backup_y_mantenimiento.sql:/docker-entrypoint-initdb.d/02_backup_y_mantenimiento.sql
 volumes:
   dbdata:
