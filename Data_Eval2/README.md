@@ -12,7 +12,7 @@ Base de datos MySQL para el sistema de gestión de usuarios. Incluye scripts SQL
 ### Herramientas de Administración
 - **MySQL Client**: Para ejecución de scripts desde línea de comandos
 - **phpMyAdmin**: Opcional, para administración web
-- **MySQL Workbench**: Opcional, para diseño y administración gráfica
+- **MySQL Workbench**: Opcional, para diseño y administración gráficas
 
 ## Estructura de Archivos
 

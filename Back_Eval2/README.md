@@ -13,7 +13,7 @@ Backend API desarrollado en JavaScript con Node.js y Express framework. Proporci
 - **express**: ^4.18.2 - Framework web para Node.js
 - **cors**: ^2.8.5 - Middleware para habilitar CORS
 - **mysql2**: ^3.6.0 - Driver de MySQL para Node.js
-- **dotenv**: ^16.3.1 - Manejo de variables de entorno
+- **dotenv**: ^16.3.1 - Manejo de variables de entornos
 
 ### Dependencias de Desarrollo
 - **nodemon**: ^3.0.1 - Para desarrollo con recarga automática
